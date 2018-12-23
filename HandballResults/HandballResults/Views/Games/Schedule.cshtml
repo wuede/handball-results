@@ -1,0 +1,20 @@
+﻿@model HandballResults.Models.GamesViewModel
+
+@{
+    ViewBag.Title = "Resultate";
+}
+
+<h2>Resultate</h2>
+<ul>
+    @{
+        foreach (var game in Model.Games)
+        {
+            <li onclick="location.href='https://www.handball.ch/de/matchcenter/spiele/@game.GameId'">
+                <span>@game.GameDateTime.ToString("ddd dd.MMM HH:mm") | @game.Venue</span><br/>
+                <span>@game.TeamAName - @game.TeamBName</span><br/>
+                <span>@game.LeagueLong</span>
+
+            </li>
+        }
+    }
+</ul>
