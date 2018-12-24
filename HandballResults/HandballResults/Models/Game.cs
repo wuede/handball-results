@@ -15,16 +15,16 @@ namespace HandballResults.Models
         public string LeagueShort { get; set; }
         public string Round { get; set; }
         public string GameStatus { get; set; }
-        public int TeamAScoreHt { get; set; }
-        public int TeamBScoreHt { get; set; }
-        public int TeamAScoreFt { get; set; }
-        public int TeamBScoreFt { get; set; }
+        public int? TeamAScoreHt { get; set; }
+        public int? TeamBScoreHt { get; set; }
+        public int? TeamAScoreFt { get; set; }
+        public int? TeamBScoreFt { get; set; }
         public string Venue { get; set; }
         public string VenueAddress { get; set; }
-        public int VenueZip { get; set; }
+        public int? VenueZip { get; set; }
         public string VenueCity { get; set; }
-        public int Spectators { get; set; }
-        public int RoundNr { get; set; }
+        public int? Spectators { get; set; }
+        public int? RoundNr { get; set; }
 
     }
 }
