@@ -31,12 +31,20 @@ namespace HandballResults.Services
             return cache.AddOrGetFromCache(cacheKey, valueFactory, DateTimeOffset.Now.Add(TimeSpan.FromMinutes(30)));
         }
 
-        public async Task<IEnumerable<Game>> GetSchedule() => await GetSchedule(0);
+        public async Task<IEnumerable<Game>> GetScheduleAsync() => await GetScheduleAsync(0);
 
-        public Task<IEnumerable<Game>> GetSchedule(int teamId)
+        public Task<IEnumerable<Game>> GetScheduleAsync(int teamId)
         {
             var cacheKey = $"{CacheKeyPrefix}-schedule-${teamId}";
-            var valueFactory = new Func<Task<IEnumerable<Game>>>(async () => await resultService.GetSchedule(teamId));
+            var valueFactory = new Func<Task<IEnumerable<Game>>>(async () => await resultService.GetScheduleAsync(teamId));
+
+            return cache.AddOrGetFromCache(cacheKey, valueFactory, DateTimeOffset.Now.Add(TimeSpan.FromMinutes(30)));
+        }
+
+        public Task<Group> GetGroupForTeam(int teamId)
+        {
+            var cacheKey = $"{CacheKeyPrefix}-groupByTeam-${teamId}";
+            var valueFactory = new Func<Task<Group>>(async () => await resultService.GetGroupForTeam(teamId));
 
             return cache.AddOrGetFromCache(cacheKey, valueFactory, DateTimeOffset.Now.Add(TimeSpan.FromMinutes(30)));
         }

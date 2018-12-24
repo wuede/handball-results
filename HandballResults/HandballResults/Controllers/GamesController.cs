@@ -39,7 +39,7 @@ namespace HandballResults.Controllers
 
             try
             {
-                games = await ResultService.GetSchedule(teamId);
+                games = await ResultService.GetScheduleAsync(teamId);
             }
             catch (ServiceException e)
             {
