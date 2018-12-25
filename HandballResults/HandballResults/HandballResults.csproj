@@ -132,6 +132,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\GamesController.cs" />
+    <Compile Include="Controllers\TeamsController.cs" />
+    <Compile Include="Models\TeamsViewModel.cs" />
     <Compile Include="Models\GroupViewModel.cs" />
     <Compile Include="Models\GamesViewModel.cs" />
     <Compile Include="Global.asax.cs">
@@ -184,6 +186,7 @@
     <Content Include="Views\Games\Results.cshtml" />
     <Content Include="Views\Games\Schedule.cshtml" />
     <Content Include="Views\Group\Team.cshtml" />
+    <Content Include="Views\Teams\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

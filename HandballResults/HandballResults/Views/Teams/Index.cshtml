@@ -1,0 +1,78 @@
+﻿@model HandballResults.Models.TeamsViewModel
+
+@{
+    ViewBag.Title = "Tabelle";
+}
+
+<h2>Spielplan</h2>
+<ul>
+    @{
+        foreach (var game in Model.Schedule)
+        {
+            <li onclick="location.href='https://www.handball.ch/de/matchcenter/spiele/@game.GameId'">
+                <span>@game.GameDateTime.ToString("ddd dd.MMM HH:mm") | @game.Venue</span><br />
+                <span>@game.TeamAName - @game.TeamBName</span><br />
+                <span>@game.LeagueLong</span>
+
+            </li>
+        }
+    }
+</ul>
+
+<h2>Tabelle</h2>
+<table class="standings">
+
+    <thead>
+        <tr>
+            <td></td>
+            <td>Team</td>
+            <td>Sp.</td>
+            <td>PKT</td>
+            <td>S</td>
+            <td>U</td>
+            <td>N</td>
+            <td>T+</td>
+            <td>T-</td>
+            <td>T(+/-)</td>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @{
+            var pos = 1;
+            foreach (var ranking in Model.Group.Ranking)
+            {
+                <tr>
+                    <td>@(pos++)</td>
+                    <td>@ranking.TeamName</td>
+                    <td>@ranking.TotalGames</td>
+                    <td>@ranking.TotalPoints</td>
+                    <td>@ranking.TotalWins</td>
+                    <td>@ranking.TotalDraws</td>
+                    <td>@ranking.TotalLoss</td>
+                    <td>@ranking.TotalScoresPlus</td>
+                    <td>@ranking.TotalScoresMinus</td>
+                    <td>@ranking.TotalScoresDiff</td>
+                </tr>
+            }
+        }
+
+    </tbody>
+
+</table>
+
+<h2>Resultate</h2>
+<ul>
+    @{
+        foreach (var game in Model.Results)
+        {
+            <li onclick="location.href='https://www.handball.ch/de/matchcenter/spiele/@game.GameId'">
+                <span>@game.GameDateTime.ToString("ddd dd.MMM HH:mm") | @game.Venue</span><br />
+                <span>@game.TeamAName <b>@game.TeamAScoreFt</b> : <b>@game.TeamBScoreFt</b> @game.TeamBName</span><br />
+                <span>@game.LeagueLong</span>
+
+            </li>
+        }
+    }
+</ul>
