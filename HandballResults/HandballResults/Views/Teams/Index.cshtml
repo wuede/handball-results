@@ -5,19 +5,31 @@
 }
 
 <h2>Spielplan</h2>
-<ul>
-    @{
-        foreach (var game in Model.Schedule)
-        {
-            <li onclick="location.href='https://www.handball.ch/de/matchcenter/spiele/@game.GameId'">
-                <span>@game.GameDateTime.ToString("ddd dd.MMM HH:mm") | @game.Venue</span><br />
-                <span>@game.TeamAName - @game.TeamBName</span><br />
-                <span>@game.LeagueLong</span>
-
-            </li>
+<table>
+    <thead>
+    <tr>
+        <td>Datum</td>
+        <td>Heim</td>
+        <td>Gast</td>
+        <td>Halle</td>
+        <td>&nbsp;</td>
+    </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var game in Model.Schedule)
+            {
+                <tr>
+                    <td>@game.GameDateTime.ToString("ddd dd.MMM HH:mm")</td>
+                    <td>@game.TeamAName</td>
+                    <td>@game.TeamBName</td>
+                    <td>@game.Venue</td>
+                    <td><a href="https://www.handball.ch/de/matchcenter/spiele/@game.GameId">&raquo;</a></td>
+                </tr>
+            }
         }
-    }
-</ul>
+    </tbody>
+</table>
 
 <h2>Tabelle</h2>
 <table class="standings">
@@ -63,16 +75,28 @@
 </table>
 
 <h2>Resultate</h2>
-<ul>
+<table>
+    <thead>
+        <tr>
+            <td>Datum</td>
+            <td>Heim</td>
+            <td>Resultat</td>
+            <td>Gast</td>
+            <td>&nbsp;</td>
+        </tr>
+    </thead>
+    <tbody>
     @{
         foreach (var game in Model.Results)
         {
-            <li onclick="location.href='https://www.handball.ch/de/matchcenter/spiele/@game.GameId'">
-                <span>@game.GameDateTime.ToString("ddd dd.MMM HH:mm") | @game.Venue</span><br />
-                <span>@game.TeamAName <b>@game.TeamAScoreFt</b> : <b>@game.TeamBScoreFt</b> @game.TeamBName</span><br />
-                <span>@game.LeagueLong</span>
-
-            </li>
+            <tr>
+                <td>@game.GameDateTime.ToString("ddd dd.MMM HH:mm")</td>
+                <td>@game.TeamAName</td>
+                <td><b>@game.TeamAScoreFt:@game.TeamBScoreFt</b> (@game.TeamAScoreHt:@game.TeamBScoreHt)</td>
+                <td>@game.TeamBName</td>
+                <td><a href="https://www.handball.ch/de/matchcenter/spiele/@game.GameId">&raquo;</a></td>
+            </tr>
         }
     }
-</ul>
+    </tbody>
+</table>
