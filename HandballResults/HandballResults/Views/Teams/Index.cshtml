@@ -4,99 +4,26 @@
     ViewBag.Title = "Tabelle";
 }
 
-<h2>Spielplan</h2>
-<table>
-    <thead>
-    <tr>
-        <td>Datum</td>
-        <td>Heim</td>
-        <td>Gast</td>
-        <td>Halle</td>
-        <td>&nbsp;</td>
-    </tr>
-    </thead>
-    <tbody>
-        @{
-            foreach (var game in Model.Schedule)
-            {
-                <tr>
-                    <td>@game.GameDateTime.ToString("ddd dd.MMM HH:mm")</td>
-                    <td>@game.TeamAName</td>
-                    <td>@game.TeamBName</td>
-                    <td>@game.Venue</td>
-                    <td><a target="_blank" href="https://www.handball.ch/de/matchcenter/spiele/@game.GameId">&raquo;</a></td>
-                </tr>
-            }
-        }
-    </tbody>
-</table>
+<div class="container schedule">
+    <div class="loading-indicator"></div>
+</div>
 
-<h2>Tabelle</h2>
-<table class="standings">
+<div class="container standings">
+    <div class="loading-indicator"></div>
+</div>
 
-    <thead>
-        <tr>
-            <td></td>
-            <td>Team</td>
-            <td>Sp.</td>
-            <td>PKT</td>
-            <td>S</td>
-            <td>U</td>
-            <td>N</td>
-            <td>T+</td>
-            <td>T-</td>
-            <td>T(+/-)</td>
-        </tr>
-    </thead>
+<div class="container results">
+    <div class="loading-indicator"></div>
+</div>
 
-    <tbody>
 
-        @{
-            var pos = 1;
-            foreach (var ranking in Model.Group.Ranking)
-            {
-                <tr>
-                    <td>@(pos++)</td>
-                    <td>@ranking.TeamName</td>
-                    <td>@ranking.TotalGames</td>
-                    <td>@ranking.TotalPoints</td>
-                    <td>@ranking.TotalWins</td>
-                    <td>@ranking.TotalDraws</td>
-                    <td>@ranking.TotalLoss</td>
-                    <td>@ranking.TotalScoresPlus</td>
-                    <td>@ranking.TotalScoresMinus</td>
-                    <td>@ranking.TotalScoresDiff</td>
-                </tr>
-            }
-        }
-
-    </tbody>
-
-</table>
-
-<h2>Resultate</h2>
-<table>
-    <thead>
-        <tr>
-            <td>Datum</td>
-            <td>Heim</td>
-            <td>Resultat</td>
-            <td>Gast</td>
-            <td>&nbsp;</td>
-        </tr>
-    </thead>
-    <tbody>
-    @{
-        foreach (var game in Model.Results)
-        {
-            <tr>
-                <td>@game.GameDateTime.ToString("ddd dd.MMM HH:mm")</td>
-                <td>@game.TeamAName</td>
-                <td><b>@game.TeamAScoreFt:@game.TeamBScoreFt</b> (@game.TeamAScoreHt:@game.TeamBScoreHt)</td>
-                <td>@game.TeamBName</td>
-                <td><a target="_blank" href="https://www.handball.ch/de/matchcenter/spiele/@game.GameId">&raquo;</a></td>
-            </tr>
-        }
-    }
-    </tbody>
-</table>
+@section scripts
+{
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $(".schedule").load('@(Url.Action("Schedule", "Games", null, Request.Url.Scheme))');
+        $(".standings").load('@(Url.Action("Team", "Group", null, Request.Url.Scheme))');
+        $(".results").load('@(Url.Action("Results", "Games", null, Request.Url.Scheme))');
+        });
+    </script>
+}

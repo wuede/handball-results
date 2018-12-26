@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using HandballResults.Models;
 using HandballResults.Services;
@@ -27,7 +26,13 @@ namespace HandballResults.Controllers
                 error = e;
             }
 
-            return View(new GroupViewModel(group, error));
+            var viewModel = new GroupViewModel(group, error);
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView(viewModel);
+            }
+
+            return View(viewModel);
         }
     }
 }

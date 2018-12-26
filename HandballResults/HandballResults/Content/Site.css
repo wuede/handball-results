@@ -18,3 +18,13 @@ table thead {
 table tbody tr:hover {
     background-color: rgba(63, 68, 74, 0.1) /*lightgray;*/
 }
+
+.loading-indicator {
+    background-image: url(Images/ajax-loader.gif);
+    width: 30px;
+    height: 30px;
+}
+
+.container {
+    margin-bottom: 5px;
+}

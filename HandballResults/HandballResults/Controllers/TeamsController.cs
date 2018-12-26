@@ -20,7 +20,7 @@ namespace HandballResults.Controllers
             IEnumerable<Game> results = new List<Game>();
             Group group = null;
             ServiceException error = null;
-
+            /*
             try
             {
                 schedule = await ResultService.GetScheduleAsync(teamId);
@@ -30,9 +30,9 @@ namespace HandballResults.Controllers
             catch (ServiceException e)
             {
                 error = e;
-            }
+            }*/
 
-            return View(new TeamsViewModel(schedule, results, group, error));
+            return View(new TeamsViewModel(teamId));
         }
     }
 }

@@ -55,6 +55,8 @@ namespace HandballResults.Services
                 {
                     return await response.Content.ReadAsAsync<IEnumerable<Game>>();
                 }
+
+                System.Diagnostics.Trace.TraceError("SHV API responded with {0}: {1}", response.StatusCode, response.ReasonPhrase);
             }
             catch (Exception e)
             {
@@ -76,6 +78,9 @@ namespace HandballResults.Services
                 {
                     return await response.Content.ReadAsAsync<Group>();
                 }
+
+                var content = response.Content.ReadAsStringAsync();
+                System.Diagnostics.Trace.TraceError("SHV API responded with {0}: {1}", response.StatusCode, content);
             }
             catch (Exception e)
             {

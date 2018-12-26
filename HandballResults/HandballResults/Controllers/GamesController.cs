@@ -27,7 +27,13 @@ namespace HandballResults.Controllers
                 error = e;
             }
 
-            return View(new GamesViewModel(games, error));
+            var viewModel = new GamesViewModel(games, error);
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView(viewModel);
+            }
+ 
+            return View(viewModel);
         }
 
         // GET: games/results
@@ -46,7 +52,13 @@ namespace HandballResults.Controllers
                 error = e;
             }
 
-            return View(new GamesViewModel(games, error));
+            var viewModel = new GamesViewModel(games, error);
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView(viewModel);
+            }
+
+            return View(viewModel);
         }
     }
 }
