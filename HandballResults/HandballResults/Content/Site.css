@@ -1,4 +1,12 @@
-﻿table td {
+﻿body {
+    font-family: Roboto Condensed;
+    font-weight: 300;
+    font-style: normal;
+    text-transform: none;
+    font-size: 16px;
+    line-height: 1.1em;
+}
+table td {
     padding: 5px;
 }
 
