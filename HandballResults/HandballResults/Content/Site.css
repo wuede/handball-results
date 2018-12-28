@@ -6,17 +6,19 @@
     font-size: 16px;
     line-height: 1.1em;
 }
+
 table td {
     padding: 5px;
 }
 
 table thead {
-    background-color: rgba(36, 95, 163, 1); /*#333*/;
+    background-color: #245fa3;
     color: white;
 }
 
 table tbody tr:hover {
-    background-color: rgba(63, 68, 74, 0.1) /*lightgray;*/
+    background-color: lightgrey;
+    background-color: rgba(63, 68, 74, 0.1);
 }
 
 .loading-indicator {
@@ -27,4 +29,47 @@ table tbody tr:hover {
 
 .container {
     margin-bottom: 5px;
+}
+
+ul.games {
+    list-style-type: none;
+}
+
+    ul.games li {
+        padding: 10px;
+        border-bottom: 1px solid lightgrey;
+    }
+        ul.games li div {
+            margin: 5px 0;
+        }
+
+        ul.games li .info {
+            margin-bottom: 10px;
+            color: grey;
+        }
+
+        ul.games li .score {
+            background-color: black;
+            color: white;
+            width: 50px;
+            text-align: center;
+        }
+
+/* responsiveness */
+.narrow {
+    display: none;
+}
+
+.wide {
+    display: initial;
+}
+
+@media only screen and (max-width: 768px) {
+    .narrow {
+        display: initial;
+    }
+
+    .wide {
+        display: none;
+    }
 }
