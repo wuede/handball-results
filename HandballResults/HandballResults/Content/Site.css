@@ -31,16 +31,41 @@ table tbody tr:hover {
     margin-bottom: 5px;
 }
 
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.clear {
+    clear: both;
+}
+
+.col {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 ul.games {
     list-style-type: none;
 }
 
     ul.games li {
-        padding: 10px;
+        padding: 0 10px;
         border-bottom: 1px solid lightgrey;
     }
-        ul.games li div {
-            margin: 5px 0;
+
+        ul.games li a {
+            text-decoration: none;
+            color: black;
+            display: block;
+            padding: 20px 0;
+        }
+
+        ul.games li .col:first-child {
+            width: 95%;
         }
 
         ul.games li .info {
@@ -48,12 +73,40 @@ ul.games {
             color: grey;
         }
 
-        ul.games li .score {
+        ul.games li .scoreFt {
+            display: inline-block;
             background-color: black;
             color: white;
             width: 50px;
             text-align: center;
         }
+
+        ul.games li .scoreHt {
+            display: inline-block;
+            background-color: grey;
+            color: white;
+            width: 50px;
+            text-align: center;
+        }
+
+        ul.games li:hover {
+            background-color: lightgrey;
+        }
+
+.score span {
+    padding: 0 5px;
+}
+
+.score .ft {
+    font-weight: bold;
+    background-color: black;
+    color: white;
+}
+
+.score .ht {
+    background-color: lightgrey;
+
+}
 
 /* responsiveness */
 .narrow {
@@ -64,7 +117,7 @@ ul.games {
     display: initial;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 830px) {
     .narrow {
         display: initial;
     }

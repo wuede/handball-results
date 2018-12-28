@@ -3,17 +3,54 @@
 @{
     ViewBag.Title = "Resultate";
 }
-
 <h2>Resultate</h2>
-<ul>
+
+<table class="wide">
+    <thead>
+        <tr>
+            <td>Datum</td>
+            <td>Heim</td>
+            <td>Gast</td>
+            <td>Resultat</td>
+            <td>Halle</td>
+            <td>&nbsp;</td>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var game in Model.Games)
+            {
+                <tr>
+                    <td>@game.GameDateTime.ToString("ddd dd.MMM HH:mm")</td>
+                    <td>@game.TeamAName</td>
+                    <td><b>@game.TeamAScoreFt:@game.TeamBScoreFt</b> (@game.TeamAScoreHt:@game.TeamBScoreHt)</td>
+                    <td>@game.TeamBName</td>
+                    <td>@game.Venue</td>
+                    <td><a target="_blank" href="https://www.handball.ch/de/matchcenter/spiele/@game.GameId">&raquo;</a></td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<ul class="narrow games">
     @{
         foreach (var game in Model.Games)
         {
-            <li onclick="location.href='https://www.handball.ch/de/matchcenter/spiele/@game.GameId'">
-                <span>@game.GameDateTime.ToString("ddd dd.MMM HH:mm") | @game.Venue</span><br/>
-                <span>@game.TeamAName <b>@game.TeamAScoreFt</b> : <b>@game.TeamBScoreFt</b> @game.TeamBName</span><br/>
-                <span>@game.LeagueLong</span>
-
+            <li onclick="openInNewWindow('https://www.handball.ch/de/matchcenter/spiele/@game.GameId')">
+                <a href="">
+                    <div class="col">
+                        <div class="info">@game.GameDateTime.ToString("ddd dd.MMM HH:mm") | @game.Venue</div>
+                        <div>@game.TeamAName : @game.TeamBName</div>
+                        <div class="score">
+                            <span class="ft">@game.TeamAScoreFt:@game.TeamBScoreFt</span><span class="ht">(@game.TeamAScoreFt:@game.TeamBScoreFt)</span>
+                        </div>
+                        <div>@game.LeagueLong</div>
+                    </div>
+                    <div class="col">
+                        >
+                    </div>
+                </a>
             </li>
         }
     }
