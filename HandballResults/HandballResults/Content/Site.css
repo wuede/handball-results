@@ -46,6 +46,8 @@ table tbody tr:hover {
 
 ul.games {
     list-style-type: none;
+    display: block;
+    padding: 0;
 }
 
     ul.games li {
