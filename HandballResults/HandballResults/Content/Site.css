@@ -7,6 +7,10 @@
     line-height: 1.1em;
 }
 
+table {
+    border-spacing: 0;
+}
+
 table td {
     padding: 5px;
 }
@@ -31,16 +35,8 @@ table tbody tr:hover {
     margin-bottom: 5px;
 }
 
-.left {
-    float: left;
-}
-
-.right {
-    float: right;
-}
-
-.clear {
-    clear: both;
+.link {
+    cursor: pointer;
 }
 
 .col {

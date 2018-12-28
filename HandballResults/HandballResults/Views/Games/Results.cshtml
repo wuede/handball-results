@@ -20,13 +20,14 @@
         @{
             foreach (var game in Model.Games)
             {
-                <tr>
+                <tr class="link" 
+                    onclick="openInNewWindow('https://www.handball.ch/de/matchcenter/spiele/@game.GameId')">
                     <td>@game.GameDateTime.ToString("ddd dd.MMM HH:mm")</td>
                     <td>@game.TeamAName</td>
                     <td><b>@game.TeamAScoreFt:@game.TeamBScoreFt</b> (@game.TeamAScoreHt:@game.TeamBScoreHt)</td>
                     <td>@game.TeamBName</td>
                     <td>@game.Venue</td>
-                    <td><a target="_blank" href="https://www.handball.ch/de/matchcenter/spiele/@game.GameId">&raquo;</a></td>
+                    <td>&gt;</td>
                 </tr>
             }
         }
