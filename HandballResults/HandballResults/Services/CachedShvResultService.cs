@@ -28,7 +28,7 @@ namespace HandballResults.Services
             var cacheKey = $"{CacheKeyPrefix}-results-${teamId}";
             var valueFactory = new Func<Task<IEnumerable<Game>>>(async () => await resultService.GetResultsAsync(teamId));
 
-            return cache.AddOrGetFromCache(cacheKey, valueFactory, DateTimeOffset.Now.Add(TimeSpan.FromMinutes(30)));
+            return AddOrGetFromCacheAsync(cacheKey, valueFactory);
         }
 
         public async Task<IEnumerable<Game>> GetScheduleAsync() => await GetScheduleAsync(0);
@@ -38,7 +38,22 @@ namespace HandballResults.Services
             var cacheKey = $"{CacheKeyPrefix}-schedule-${teamId}";
             var valueFactory = new Func<Task<IEnumerable<Game>>>(async () => await resultService.GetScheduleAsync(teamId));
 
-            return cache.AddOrGetFromCache(cacheKey, valueFactory, DateTimeOffset.Now.Add(TimeSpan.FromMinutes(30)));
+            return AddOrGetFromCacheAsync(cacheKey, valueFactory);
+        }
+
+        private Task<IEnumerable<Game>> AddOrGetFromCacheAsync(string cacheKey, Func<Task<IEnumerable<Game>>> valueFactory)
+        {
+            try
+            {
+                return cache.AddOrGetFromCache(cacheKey, valueFactory,
+                    DateTimeOffset.Now.Add(TimeSpan.FromMinutes(30)));
+            }
+            catch (ServiceException)
+            {
+                // do not cache exception
+                cache.Remove(cacheKey);
+                throw;
+            }
         }
 
         public Task<Group> GetGroupForTeam(int teamId)
@@ -46,7 +61,17 @@ namespace HandballResults.Services
             var cacheKey = $"{CacheKeyPrefix}-groupByTeam-${teamId}";
             var valueFactory = new Func<Task<Group>>(async () => await resultService.GetGroupForTeam(teamId));
 
-            return cache.AddOrGetFromCache(cacheKey, valueFactory, DateTimeOffset.Now.Add(TimeSpan.FromMinutes(30)));
+            try
+            {
+                return cache.AddOrGetFromCache(cacheKey, valueFactory,
+                    DateTimeOffset.Now.Add(TimeSpan.FromMinutes(30)));
+            }
+            catch (ServiceException)
+            {
+                // do not cache exception
+                cache.Remove(cacheKey);
+                throw;
+            }            
         }
     }
 }
