@@ -41,11 +41,11 @@ namespace HandballResults.Services
             return AddOrGetFromCacheAsync(cacheKey, valueFactory);
         }
 
-        private Task<IEnumerable<Game>> AddOrGetFromCacheAsync(string cacheKey, Func<Task<IEnumerable<Game>>> valueFactory)
+        private async Task<IEnumerable<Game>> AddOrGetFromCacheAsync(string cacheKey, Func<Task<IEnumerable<Game>>> valueFactory)
         {
             try
             {
-                return cache.AddOrGetFromCache(cacheKey, valueFactory,
+                return await cache.AddOrGetFromCache(cacheKey, valueFactory,
                     DateTimeOffset.Now.Add(TimeSpan.FromMinutes(30)));
             }
             catch (ServiceException)
