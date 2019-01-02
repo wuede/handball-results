@@ -13,5 +13,6 @@ namespace HandballResults.Services
         Task<IEnumerable<Game>> GetScheduleAsync(int teamId);
 
         Task<Group> GetGroupForTeam(int teamId);
+        Task<bool> IsTeamSupportedAsync(int teamId);
     }
 }

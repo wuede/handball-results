@@ -73,5 +73,7 @@ namespace HandballResults.Services
                 throw;
             }            
         }
+
+        public Task<bool> IsTeamSupportedAsync(int teamId) => resultService.IsTeamSupportedAsync(teamId);
     }
 }

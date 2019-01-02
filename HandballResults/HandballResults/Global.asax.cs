@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Net;
+using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 
@@ -14,10 +16,22 @@ namespace HandballResults
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
-        protected void Application_Error()
+        protected void Application_Error(object sender, EventArgs e)
         {
+            var httpContext = ((MvcApplication)sender).Context;
             var exception = Server.GetLastError();
-            System.Diagnostics.Trace.TraceError("uncaught exception: {0}", exception);
+
+            if (exception is ArgumentException)
+            {
+                httpContext.ClearError();
+                httpContext.Response.Clear();
+                httpContext.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+                httpContext.Response.StatusDescription = exception.Message;
+            }
+            else
+            {
+                System.Diagnostics.Trace.TraceError("uncaught exception: {0}", exception);
+            }
         }
     }
 }
