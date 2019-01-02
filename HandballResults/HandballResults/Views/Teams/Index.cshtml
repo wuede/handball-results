@@ -4,26 +4,68 @@
     ViewBag.Title = "Tabelle";
 }
 
-<div class="container schedule">
+<div id="schedule" class="shv-container">
+    <div class="content">
+        <div class="loading-indicator"></div>
+    </div>
+
+    <p>
+        @if (Model.IsScheduleMinimized)
+        {
+            @Html.ActionLink("mehr anzeigen", "Index", new {minimizedSchedule = false})
+        }
+        else
+        {
+            @Html.ActionLink("weniger anzeigen", "Index")
+        }
+    </p>
+</div>
+
+
+
+<div id="standings" class="shv-container">
     <div class="loading-indicator"></div>
 </div>
 
-<div class="container standings">
-    <div class="loading-indicator"></div>
+<div id="results" class="shv-container">
+    <div class="content">
+        <div class="loading-indicator"></div>
+    </div>
+
+    <p>
+        @if (Model.IsResultsMinimized)
+        {
+            @Html.ActionLink("mehr anzeigen", "Index", "Teams", null, null, "results", new {minimizedResults = false}, null)
+        }
+        else
+        {
+            @Html.ActionLink("weniger anzeigen", "Index", "Teams", null, null, "results", null, null)
+        }
+    </p>
 </div>
 
-<div class="container results">
-    <div class="loading-indicator"></div>
-</div>
+
 
 
 @section scripts
 {
     <script type="text/javascript">
-    $(document).ready(function () {
-        $(".schedule").load('@(Url.Action("Schedule", "Games", null, Request.Url.Scheme))');
-        $(".standings").load('@(Url.Action("Team", "Group", null, Request.Url.Scheme))');
-        $(".results").load('@(Url.Action("Results", "Games", null, Request.Url.Scheme))');
+        function contentLoaded(container) {
+            $(container).siblings().show();
+        }
+
+        $(document).ready(function () {
+            $("#schedule .content").load('@(Url.Action("Schedule", "Games", new {minimized=Model.IsScheduleMinimized}, Request.Url.Scheme))', function (response, status, xhr) {
+                if (status !== "error") {
+                    contentLoaded($(this));
+                }
+            });
+            $("#standings").load('@(Url.Action("Team", "Group", new { minimized = true }, Request.Url.Scheme))');
+            $("#results .content").load('@(Url.Action("Results", "Games", new { minimized = Model.IsResultsMinimized }, Request.Url.Scheme))', function (response, status, xhr) {
+                if (status !== "error") {
+                    contentLoaded($(this));
+                }
+            });
         });
     </script>
 }

@@ -17,7 +17,7 @@
     </thead>
     <tbody>
     @{
-        foreach (var game in Model.Games)
+        foreach (var game in Model.GetVisibleGames())
         {
             <tr class="link" 
                     onclick="openInNewWindow('https://www.handball.ch/de/matchcenter/spiele/@game.GameId')">
@@ -34,7 +34,7 @@
 
 <ul class="narrow games">
     @{
-        foreach (var game in Model.Games)
+        foreach (var game in Model.GetVisibleGames())
         {
             <li onclick="openInNewWindow('https://www.handball.ch/de/matchcenter/spiele/@game.GameId')">
                 <a href="">
