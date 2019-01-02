@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using HandballResults.Models;
@@ -18,6 +19,7 @@ namespace HandballResults.Controllers
 
         // GET: teams/{teamId}
         [Route("{teamId}")]
+        [OutputCache(Duration = 1500, VaryByParam = "*")]
         public async Task<ActionResult> Index(int teamId, bool minimizedSchedule = true, bool minimizedResults = true)
         {
             if (!await resultService.IsTeamSupportedAsync(teamId))

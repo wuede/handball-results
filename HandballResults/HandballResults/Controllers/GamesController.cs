@@ -18,6 +18,7 @@ namespace HandballResults.Controllers
 
         // GET: games/results
         [Route("results/{teamId?}")]
+        [OutputCache(Duration = 1500, VaryByParam = "*")]
         public async Task<ActionResult> Results(int teamId = 0, bool minimized = true)
         {
             IEnumerable<Game> games = new List<Game>();
@@ -43,6 +44,7 @@ namespace HandballResults.Controllers
 
         // GET: games/results
         [Route("schedule/{teamId?}")]
+        [OutputCache(Duration = 1500, VaryByParam = "*")]
         public async Task<ActionResult> Schedule(int teamId = 0, bool minimized = true)
         {
             IEnumerable<Game> games = new List<Game>();

@@ -17,6 +17,7 @@ namespace HandballResults.Controllers
 
         [HttpGet]
         [Route("{teamId}")]
+        [OutputCache(Duration = 1500, VaryByParam = "*")]
         public async Task<ActionResult> Team(int teamId)
         {
             Group group = null;
