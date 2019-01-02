@@ -11,19 +11,32 @@ table {
     border-spacing: 0;
 }
 
-table td {
-    padding: 5px;
+    table td {
+        padding: 5px;
+    }
+
+    table thead {
+        background-color: #245fa3;
+        color: white;
+    }
+
+    table tbody tr:hover {
+        background-color: lightgrey;
+        background-color: rgba(63, 68, 74, 0.1);
+    }
+
+a {
+    text-decoration: none;
+    color: #245fa3;
 }
 
-table thead {
-    background-color: #245fa3;
-    color: white;
-}
+    a:visited {
+        color: #245fa3;
+    }
 
-table tbody tr:hover {
-    background-color: lightgrey;
-    background-color: rgba(63, 68, 74, 0.1);
-}
+    a:hover {
+        text-decoration: underline;
+    }
 
 .loading-indicator {
     background-image: url(Images/ajax-loader.gif);
@@ -35,9 +48,9 @@ table tbody tr:hover {
     margin-bottom: 5px;
 }
 
-.shv-container p {
-    display: none;
-}
+    .shv-container p {
+        display: none;
+    }
 
 .link {
     cursor: pointer;
@@ -106,7 +119,6 @@ ul.games {
 
 .score .ht {
     background-color: lightgrey;
-
 }
 
 /* responsiveness */
