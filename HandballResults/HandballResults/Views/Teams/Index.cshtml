@@ -12,11 +12,11 @@
     <p>
         @if (Model.IsScheduleMinimized)
         {
-            @Html.ActionLink("mehr anzeigen", "Index", new {minimizedSchedule = false})
+            @Html.ActionLink("mehr anzeigen", "Index", new {minimizedResults = Model.IsResultsMinimized, minimizedSchedule = false})
         }
         else
         {
-            @Html.ActionLink("weniger anzeigen", "Index")
+            @Html.ActionLink("weniger anzeigen", "Index", new { minimizedResults = Model.IsResultsMinimized, minimizedSchedule = true })
         }
     </p>
 </div>
@@ -35,11 +35,11 @@
     <p>
         @if (Model.IsResultsMinimized)
         {
-            @Html.ActionLink("mehr anzeigen", "Index", "Teams", null, null, "results", new {minimizedResults = false}, null)
+            @Html.ActionLink("mehr anzeigen", "Index", "Teams", null, null, "results", new {minimizedResults = false, minimizedSchedule = Model.IsScheduleMinimized}, null)
         }
         else
         {
-            @Html.ActionLink("weniger anzeigen", "Index", "Teams", null, null, "results", null, null)
+            @Html.ActionLink("weniger anzeigen", "Index", "Teams", null, null, "results", new { minimizedResults = true, minimizedSchedule = Model.IsScheduleMinimized }, null)
         }
     </p>
 </div>
