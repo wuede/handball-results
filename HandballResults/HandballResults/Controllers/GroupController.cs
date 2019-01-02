@@ -8,7 +8,12 @@ namespace HandballResults.Controllers
     [RoutePrefix("groups")]
     public class GroupController : Controller
     {
-        private static readonly IResultService ResultService = new CachedShvResultService();
+        private readonly IResultService resultService;
+
+        public GroupController(IResultService resultService)
+        {
+            this.resultService = resultService;
+        }
 
         [HttpGet]
         [Route("{teamId}")]
@@ -19,7 +24,7 @@ namespace HandballResults.Controllers
 
             try
             {
-                group = await ResultService.GetGroupForTeam(teamId);
+                group = await resultService.GetGroupForTeam(teamId);
             }
             catch (ServiceException e)
             {

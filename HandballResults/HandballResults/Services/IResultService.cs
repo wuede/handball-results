@@ -4,7 +4,7 @@ using HandballResults.Models;
 
 namespace HandballResults.Services
 {
-    interface IResultService
+    public interface IResultService
     {
         Task<IEnumerable<Game>> GetResultsAsync();
         Task<IEnumerable<Game>> GetResultsAsync(int teamId);

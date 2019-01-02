@@ -9,7 +9,12 @@ namespace HandballResults.Controllers
     [RoutePrefix("games")]
     public class GamesController : Controller
     {
-        private static readonly IResultService ResultService = new CachedShvResultService();
+        private readonly IResultService resultService;
+
+        public GamesController(IResultService resultService)
+        {
+            this.resultService = resultService;
+        }
 
         // GET: games/results
         [Route("results/{teamId?}")]
@@ -20,7 +25,7 @@ namespace HandballResults.Controllers
 
             try
             {
-                games = await ResultService.GetResultsAsync(teamId);
+                games = await resultService.GetResultsAsync(teamId);
             }
             catch (ServiceException e)
             {
@@ -45,7 +50,7 @@ namespace HandballResults.Controllers
 
             try
             {
-                games = await ResultService.GetScheduleAsync(teamId);
+                games = await resultService.GetScheduleAsync(teamId);
             }
             catch (ServiceException e)
             {

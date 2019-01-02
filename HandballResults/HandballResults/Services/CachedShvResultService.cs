@@ -15,9 +15,9 @@ namespace HandballResults.Services
         private readonly IResultService resultService;
         private readonly ObjectCache cache;
 
-        public CachedShvResultService()
+        public CachedShvResultService(ShvResultService resultService)
         {
-            resultService = new ShvResultService();
+            this.resultService = resultService;
             cache = MemoryCache.Default;
         }
 
@@ -58,7 +58,7 @@ namespace HandballResults.Services
 
         public Task<Group> GetGroupForTeam(int teamId)
         {
-            var cacheKey = $"{CacheKeyPrefix}-groupByTeam-${teamId}";
+            var cacheKey = $"{CacheKeyPrefix}-groupByTeam-{teamId}";
             var valueFactory = new Func<Task<Group>>(async () => await resultService.GetGroupForTeam(teamId));
 
             try
