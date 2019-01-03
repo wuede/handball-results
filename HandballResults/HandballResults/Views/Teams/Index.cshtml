@@ -5,46 +5,17 @@
 }
 
 <div id="schedule" class="shv-container">
-    <div class="content">
-        <div class="loading-indicator"></div>
-    </div>
-
-    <p>
-        @if (Model.IsScheduleMinimized)
-        {
-            @Html.ActionLink("mehr anzeigen", "Index", new {minimizedResults = Model.IsResultsMinimized, minimizedSchedule = false})
-        }
-        else
-        {
-            @Html.ActionLink("weniger anzeigen", "Index", new { minimizedResults = Model.IsResultsMinimized, minimizedSchedule = true })
-        }
-    </p>
+    <div class="loading-indicator"></div>
 </div>
-
-
 
 <div id="standings" class="shv-container">
     <div class="loading-indicator"></div>
 </div>
 
 <div id="results" class="shv-container">
-    <div class="content">
-        <div class="loading-indicator"></div>
-    </div>
+    <div class="loading-indicator"></div>
 
-    <p>
-        @if (Model.IsResultsMinimized)
-        {
-            @Html.ActionLink("mehr anzeigen", "Index", "Teams", null, null, "results", new {minimizedResults = false, minimizedSchedule = Model.IsScheduleMinimized}, null)
-        }
-        else
-        {
-            @Html.ActionLink("weniger anzeigen", "Index", "Teams", null, null, "results", new { minimizedResults = true, minimizedSchedule = Model.IsScheduleMinimized }, null)
-        }
-    </p>
 </div>
-
-
 
 
 @section scripts
@@ -55,15 +26,17 @@
         }
 
         $(document).ready(function () {
-            $("#schedule .content").load('@(Url.Action("Schedule", "Games", new {minimized=Model.IsScheduleMinimized}, Request.Url.Scheme))', function (response, status, xhr) {
+            $("#schedule").load('@(Url.Action("Schedule", "Games", null, Request.Url.Scheme))', function (response, status, xhr) {
                 if (status !== "error") {
                     contentLoaded($(this));
+                    initSchedule();
                 }
             });
-            $("#standings").load('@(Url.Action("Team", "Group", new { minimized = true }, Request.Url.Scheme))');
-            $("#results .content").load('@(Url.Action("Results", "Games", new { minimized = Model.IsResultsMinimized }, Request.Url.Scheme))', function (response, status, xhr) {
+            $("#standings").load('@(Url.Action("Team", "Group", null, Request.Url.Scheme))');
+            $("#results").load('@(Url.Action("Results", "Games", null, Request.Url.Scheme))', function (response, status, xhr) {
                 if (status !== "error") {
                     contentLoaded($(this));
+                    initResults();
                 }
             });
         });

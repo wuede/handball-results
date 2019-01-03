@@ -38,6 +38,10 @@ a {
         text-decoration: underline;
     }
 
+.hidden {
+    display: none;
+}
+
 .loading-indicator {
     background-image: url(Images/ajax-loader.gif);
     width: 30px;
@@ -47,10 +51,6 @@ a {
 .shv-container {
     margin-bottom: 5px;
 }
-
-    .shv-container p {
-        display: none;
-    }
 
 .link {
     cursor: pointer;

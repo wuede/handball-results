@@ -3,10 +3,12 @@
 @{
     ViewBag.Title = "Resultate";
 }
-<h2>Resultate</h2>
 
-<table class="wide">
-    <thead>
+<div id="results-container">
+    <h2>Resultate</h2>
+
+    <table class="wide">
+        <thead>
         <tr>
             <td>Datum</td>
             <td>Heim</td>
@@ -15,12 +17,12 @@
             <td>Halle</td>
             <td>&nbsp;</td>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         @{
-            foreach (var game in Model.GetVisibleGames())
+            foreach (var game in Model.Games)
             {
-                <tr class="link" 
+                <tr class="link"
                     onclick="openInNewWindow('https://www.handball.ch/de/matchcenter/spiele/@game.GameId')">
                     <td>@game.GameDateTime.ToString("ddd dd.MMM HH:mm")</td>
                     <td>@game.TeamAName</td>
@@ -31,28 +33,56 @@
                 </tr>
             }
         }
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
-<ul class="narrow games">
-    @{
-        foreach (var game in Model.GetVisibleGames())
-        {
-            <li onclick="openInNewWindow('https://www.handball.ch/de/matchcenter/spiele/@game.GameId')">
-                <a href="">
-                    <div class="col">
-                        <div class="info">@game.GameDateTime.ToString("ddd dd.MMM HH:mm") | @game.Venue</div>
-                        <div>@game.TeamAName : @game.TeamBName</div>
-                        <div class="score">
-                            <span class="ft">@game.TeamAScoreFt:@game.TeamBScoreFt</span><span class="ht">(@game.TeamAScoreFt:@game.TeamBScoreFt)</span>
+    <ul class="narrow games">
+        @{
+            foreach (var game in Model.Games)
+            {
+                <li onclick="openInNewWindow('https://www.handball.ch/de/matchcenter/spiele/@game.GameId')">
+                    <a href="">
+                        <div class="col">
+                            <div class="info">@game.GameDateTime.ToString("ddd dd.MMM HH:mm") | @game.Venue</div>
+                            <div>@game.TeamAName : @game.TeamBName</div>
+                            <div class="score">
+                                <span class="ft">@game.TeamAScoreFt:@game.TeamBScoreFt</span><span class="ht">(@game.TeamAScoreFt:@game.TeamBScoreFt)</span>
+                            </div>
+                            <div>@game.LeagueLong</div>
                         </div>
-                        <div>@game.LeagueLong</div>
-                    </div>
-                    <div class="col">
-                        >
-                    </div>
-                </a>
-            </li>
+                        <div class="col">
+                            >
+                        </div>
+                    </a>
+                </li>
+            }
         }
+    </ul>
+
+    <p><a id="results-visibility-switch" href="#results" data-alternative-text="weniger anzeigen">alle anzeigen</a></p>
+</div>
+
+<script type="text/javascript">
+    var results;
+
+    function initResults() {
+        var switchSelector = "#results-visibility-switch";
+        $(switchSelector).click(function () {
+            results.toggle();
+        });
+
+        results = gamesModule.games(["#results-container table tbody tr", "#results-container ul li"], switchSelector);
+        results.hideMost();
     }
-</ul>
+</script>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            initResults();
+        });
+    </script>
+}

@@ -19,7 +19,7 @@ namespace HandballResults.Controllers
         // GET: games/results
         [Route("results/{teamId?}")]
         [OutputCache(Duration = 1500, VaryByParam = "*")]
-        public async Task<ActionResult> Results(int teamId = 0, bool minimized = true)
+        public async Task<ActionResult> Results(int teamId = 0)
         {
             IEnumerable<Game> games = new List<Game>();
             ServiceException error = null;
@@ -33,7 +33,7 @@ namespace HandballResults.Controllers
                 error = e;
             }
 
-            var viewModel = new GamesViewModel(games, minimized, error);
+            var viewModel = new GamesViewModel(games, error);
             if (Request.IsAjaxRequest())
             {
                 return PartialView(viewModel);
@@ -45,7 +45,7 @@ namespace HandballResults.Controllers
         // GET: games/results
         [Route("schedule/{teamId?}")]
         [OutputCache(Duration = 1500, VaryByParam = "*")]
-        public async Task<ActionResult> Schedule(int teamId = 0, bool minimized = true)
+        public async Task<ActionResult> Schedule(int teamId = 0)
         {
             IEnumerable<Game> games = new List<Game>();
             ServiceException error = null;
@@ -59,7 +59,7 @@ namespace HandballResults.Controllers
                 error = e;
             }
 
-            var viewModel = new GamesViewModel(games, minimized, error);
+            var viewModel = new GamesViewModel(games, error);
             if (Request.IsAjaxRequest())
             {
                 return PartialView(viewModel);

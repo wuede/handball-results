@@ -15,10 +15,7 @@ namespace HandballResults.Models
 
         public ServiceException Error { get; set; }
 
-        public bool IsScheduleMinimized { get; set; }
-
-        public bool IsResultsMinimized { get; set; }
-
+       
         public TeamsViewModel(IEnumerable<Game> schedule, IEnumerable<Game> results, Group group, ServiceException error)
         {
             Schedule = schedule;
@@ -27,11 +24,9 @@ namespace HandballResults.Models
             Error = error;
         }
 
-        public TeamsViewModel(int teamId, bool scheduleMinimized, bool resultsMinimized)
+        public TeamsViewModel(int teamId)
         {
             TeamId = teamId;
-            IsScheduleMinimized = scheduleMinimized;
-            IsResultsMinimized = resultsMinimized;
         }
     }
 }
