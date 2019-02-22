@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using HandballResults.Config;
 using HandballResults.Models;
 
 namespace HandballResults.Services
@@ -13,13 +14,35 @@ namespace HandballResults.Services
         private static readonly Uri ApiBaseUri = new Uri("http://api.handball.ch/rest/v1/");
         private static readonly Uri ClubApiBaseUri = new Uri(ApiBaseUri, "clubs/140631/");
         private static readonly HttpClient HttpClient = new HttpClient();
+        private static readonly HashSet<int> ExcludedTeamIds = new HashSet<int>();
 
-        private static readonly Task<IEnumerable<Team>> SupportedTeamsFetchTask;
+        private static Task<Dictionary<int, Team>> _supportedTeamsFetchTask;
 
         static ShvResultService()
         {
             HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "MTQwNjMxOjJYeEp0ZmRO");
-            SupportedTeamsFetchTask = GetTeamsAsync();
+            StartFetchingSupportedTeams();
+
+            var excludedTeams = HandballResultsConfig.GetExcludedTeams();
+            foreach (TeamElement team in excludedTeams)
+            {
+                System.Diagnostics.Trace.TraceInformation("excluding team {0}", team.Id);
+                ExcludedTeamIds.Add(team.Id);
+            }
+        }
+
+        private static void StartFetchingSupportedTeams()
+        {
+            _supportedTeamsFetchTask = GetTeamsAsync().ContinueWith(t =>
+            {
+                if (t.Status == TaskStatus.RanToCompletion)
+                {
+                    return t.Result.Where(team => !ExcludedTeamIds.Contains(team.TeamId)).GroupBy(team => team.TeamId)
+                        .ToDictionary(g => g.Key, g => g.Last());
+                }
+
+                return new Dictionary<int, Team>();
+            });
         }
 
         public static async Task<IEnumerable<Team>> GetTeamsAsync()
@@ -83,7 +106,9 @@ namespace HandballResults.Services
                 var response = await HttpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadAsAsync<IEnumerable<Game>>();
+                    var games = await response.Content.ReadAsAsync<IEnumerable<Game>>();
+
+                    return await FilterGamesAsync(games);
                 }
 
                 System.Diagnostics.Trace.TraceError("SHV API responded with {0}: {1}", response.StatusCode,
@@ -95,6 +120,13 @@ namespace HandballResults.Services
             }
 
             throw new ServiceException("failed to get games");
+        }
+
+        private static async Task<IEnumerable<Game>> FilterGamesAsync(IEnumerable<Game> games)
+        {
+            var supportedTeamNames = (await EnsureSupportedTeamsAsync()).Values.Select(t => t.TeamName).ToList();
+            return games.Where(g =>
+                supportedTeamNames.Contains(g.TeamAName) || supportedTeamNames.Contains(g.TeamBName)).ToList();
         }
 
         public async Task<Group> GetGroupForTeam(int teamId)
@@ -124,7 +156,7 @@ namespace HandballResults.Services
 
         private static async Task ValidateTeamAsync(int teamId)
         {
-            var supportedTeams = await FetchSupportedTeamsFetchTask();
+            var supportedTeams = await EnsureSupportedTeamsAsync();
             if (!supportedTeams.Any() || !supportedTeams.ContainsKey(teamId))
             {
                 throw new ArgumentException($"Team Id {teamId} is not supported");
@@ -133,30 +165,32 @@ namespace HandballResults.Services
 
         public async Task<bool> IsTeamSupportedAsync(int teamId)
         {
-            var supportedTeams = await FetchSupportedTeamsFetchTask();
+            var supportedTeams = await EnsureSupportedTeamsAsync();
             return supportedTeams.ContainsKey(teamId);
         }
         
 
-        private static async Task<Dictionary<int, Team>> FetchSupportedTeamsFetchTask()
+        private static async Task<Dictionary<int, Team>> EnsureSupportedTeamsAsync()
         {
-            var attempt = 1;
-            while (attempt < 6)
+            var supportedTeams = await _supportedTeamsFetchTask;
+            if (supportedTeams.Any())
             {
-                try
+                return supportedTeams;
+            }
+            {
+                var attempt = 1;
+                while (attempt++ < 6)
                 {
-                    return (await SupportedTeamsFetchTask).GroupBy(team => team.TeamId)
-                        .ToDictionary(g => g.Key, g => g.Last());
+                    StartFetchingSupportedTeams();
+                    supportedTeams = await _supportedTeamsFetchTask;
+                    if (supportedTeams.Any())
+                    {
+                        return supportedTeams;
+                    }
                 }
-                catch (Exception e)
-                {
-                    System.Diagnostics.Trace.TraceWarning("Failed to fetch supported teams: {0}", e);
-                }
-
-                attempt++;
             }
 
-            System.Diagnostics.Trace.TraceWarning("Giving up to fetch supported teams");
+            System.Diagnostics.Trace.TraceWarning("Giving up fetching supported teams");
             return new Dictionary<int, Team>();
         }
     }
