@@ -23,7 +23,7 @@ namespace HandballResults.Config
     {
         public TeamElement this[int index]
         {
-            get => (TeamElement)BaseGet(index);
+            get { return (TeamElement) BaseGet(index); }
             set
             {
                 if (BaseGet(index) != null)
@@ -31,6 +31,7 @@ namespace HandballResults.Config
                 BaseAdd(index, value);
             }
         }
+
         protected override ConfigurationElement CreateNewElement()
         {
             return new TeamElement();
@@ -46,8 +47,8 @@ namespace HandballResults.Config
         [ConfigurationProperty("id", IsRequired = true)]
         public int Id
         {
-            get => (int)this["id"];
-            set => this["id"] = value;
+            get { return (int) this["id"]; }
+            set { this["id"] = value; }
         }
     }
 }
