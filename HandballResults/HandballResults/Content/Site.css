@@ -9,6 +9,8 @@
 
 table {
     border-spacing: 0;
+    width: 100%;
+    min-width: 800px;
 }
 
     table td {
@@ -24,6 +26,10 @@ table {
         background-color: lightgrey;
         background-color: rgba(63, 68, 74, 0.1);
     }
+
+table.standings {
+    min-width: initial;
+}
 
 a {
     text-decoration: none;
