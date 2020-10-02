@@ -32,5 +32,5 @@ jobs:
       with:
         app-name: 'hcdu-results'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_76cf1d85663f4455a5af89506f49b917 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_9d8f7dfc336b49fab0f09cacb28591bd }}
         package: ./published/
