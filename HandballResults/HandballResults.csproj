@@ -168,7 +168,6 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <None Include="Properties\PublishProfiles\hcdu-results - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\games-module.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -196,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
