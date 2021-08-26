@@ -11,7 +11,7 @@ namespace HandballResults.Services
 {
     public class ShvResultService : IResultService
     {
-        private static readonly Uri ApiBaseUri = new Uri("http://api.handball.ch/rest/v1/");
+        private static readonly Uri ApiBaseUri = new Uri("https://api.handball.ch/rest/v1/");
         private static readonly Uri ClubApiBaseUri = new Uri(ApiBaseUri, "clubs/140631/");
         private static readonly HttpClient HttpClient = new HttpClient();
         private static readonly HashSet<int> ExcludedTeamIds = new HashSet<int>();
