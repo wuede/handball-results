@@ -75,12 +75,17 @@ namespace HandballResults.Services
         public async Task<IEnumerable<Game>> GetResultsAsync(int teamId)
         {
             var partialUri = "games?status=played&order=desc";
+            Uri uri;
             if (teamId > 0)
             {
                 await ValidateTeamAsync(teamId);
                 partialUri = $"teams/{teamId}/{partialUri}";
+                uri = new Uri(ApiBaseUri, partialUri);
             }
-            var uri = new Uri(ClubApiBaseUri, partialUri);
+            else
+            {
+                uri = new Uri(ClubApiBaseUri, partialUri);
+            }
             return await GetGamesAsync(uri);
         }
 
@@ -89,12 +94,17 @@ namespace HandballResults.Services
         public async Task<IEnumerable<Game>> GetScheduleAsync(int teamId)
         {
             var partialUri = "games?status=planned&order=asc";
+            Uri uri;
             if (teamId > 0)
             {
                 await ValidateTeamAsync(teamId);
                 partialUri = $"teams/{teamId}/{partialUri}";
+                uri = new Uri(ApiBaseUri, partialUri);
             }
-            var uri = new Uri(ClubApiBaseUri, partialUri);
+            else
+            {
+                uri = new Uri(ClubApiBaseUri, partialUri);
+            }
             return await GetGamesAsync(uri);
         }
 
@@ -168,7 +178,7 @@ namespace HandballResults.Services
             var supportedTeams = await EnsureSupportedTeamsAsync();
             return supportedTeams.ContainsKey(teamId);
         }
-        
+
 
         private static async Task<Dictionary<int, Team>> EnsureSupportedTeamsAsync()
         {
