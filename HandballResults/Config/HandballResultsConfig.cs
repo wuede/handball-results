@@ -23,7 +23,7 @@ namespace HandballResults.Config
     {
         public TeamElement this[int index]
         {
-            get => (TeamElement) BaseGet(index);
+            get { return (TeamElement)BaseGet(index); }
             set
             {
                 if (BaseGet(index) != null)
