@@ -9,7 +9,9 @@ namespace HandballResults.Models
         public DateTime GameDateTime { get; set; }
         public string GameTypeLong { get; set; }
         public string GameTypeShort { get; set; }
+        public int TeamAId { get; set; }
         public string TeamAName { get; set; }
+        public int TeamBId { get; set; }
         public string TeamBName { get; set; }
         public string LeagueLong { get; set; }
         public string LeagueShort { get; set; }

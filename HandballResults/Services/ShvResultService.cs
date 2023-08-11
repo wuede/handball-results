@@ -14,35 +14,19 @@ namespace HandballResults.Services
         private static readonly Uri ApiBaseUri = new Uri("https://clubapi.handball.ch/rest/v1/");
         private static readonly Uri ClubApiBaseUri = new Uri(ApiBaseUri, "clubs/140631/");
         private static readonly HttpClient HttpClient = new HttpClient();
-        private static readonly HashSet<int> ExcludedTeamIds = new HashSet<int>();
-
-        private static Task<Dictionary<int, Team>> _supportedTeamsFetchTask;
+        private static readonly HashSet<int> WhitelistedTeamIds = new HashSet<int>();
 
         static ShvResultService()
         {
-            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "MTQwNjMxOjJYeEp0ZmRO");
-            StartFetchingSupportedTeams();
+            HttpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Basic", "MTQwNjMxOjJYeEp0ZmRO");
 
-            var excludedTeams = HandballResultsConfig.GetExcludedTeams();
-            foreach (TeamElement team in excludedTeams)
+            var teamWhitelist = HandballResultsConfig.GetTeamWhitelist();
+            foreach (TeamElement team in teamWhitelist)
             {
-                System.Diagnostics.Trace.TraceInformation("excluding team {0}", team.Id);
-                ExcludedTeamIds.Add(team.Id);
+                System.Diagnostics.Trace.TraceInformation("whitelisting team {0}", team.Id);
+                WhitelistedTeamIds.Add(team.Id);
             }
-        }
-
-        private static void StartFetchingSupportedTeams()
-        {
-            _supportedTeamsFetchTask = GetTeamsAsync().ContinueWith(t =>
-            {
-                if (t.Status == TaskStatus.RanToCompletion)
-                {
-                    return t.Result.Where(team => !ExcludedTeamIds.Contains(team.TeamId)).GroupBy(team => team.TeamId)
-                        .ToDictionary(g => g.Key, g => g.Last());
-                }
-
-                return new Dictionary<int, Team>();
-            });
         }
 
         public static async Task<IEnumerable<Team>> GetTeamsAsync()
@@ -78,7 +62,7 @@ namespace HandballResults.Services
             Uri uri;
             if (teamId > 0)
             {
-                await ValidateTeamAsync(teamId);
+                ValidateWhitelistedTeam(teamId);
                 partialUri = $"teams/{teamId}/{partialUri}";
                 uri = new Uri(ApiBaseUri, partialUri);
             }
@@ -86,6 +70,7 @@ namespace HandballResults.Services
             {
                 uri = new Uri(ClubApiBaseUri, partialUri);
             }
+
             return await GetGamesAsync(uri);
         }
 
@@ -97,7 +82,7 @@ namespace HandballResults.Services
             Uri uri;
             if (teamId > 0)
             {
-                await ValidateTeamAsync(teamId);
+                ValidateWhitelistedTeam(teamId);
                 partialUri = $"teams/{teamId}/{partialUri}";
                 uri = new Uri(ApiBaseUri, partialUri);
             }
@@ -105,6 +90,7 @@ namespace HandballResults.Services
             {
                 uri = new Uri(ClubApiBaseUri, partialUri);
             }
+
             return await GetGamesAsync(uri);
         }
 
@@ -118,7 +104,7 @@ namespace HandballResults.Services
                 {
                     var games = await response.Content.ReadAsAsync<IEnumerable<Game>>();
 
-                    var filtered = await FilterGamesAsync(games);
+                    var filtered = FilterGames(games);
                     return filtered.OrderBy(g => g.GameDateTime);
                 }
 
@@ -133,16 +119,15 @@ namespace HandballResults.Services
             throw new ServiceException("failed to get games");
         }
 
-        private static async Task<IEnumerable<Game>> FilterGamesAsync(IEnumerable<Game> games)
+        private static IEnumerable<Game> FilterGames(IEnumerable<Game> games)
         {
-            var supportedTeamNames = (await EnsureSupportedTeamsAsync()).Values.Select(t => t.TeamName).ToList();
-            return games.Where(g =>
-                supportedTeamNames.Contains(g.TeamAName) || supportedTeamNames.Contains(g.TeamBName)).ToList();
+            return games.Where(g => WhitelistedTeamIds.Contains(g.TeamAId) || WhitelistedTeamIds.Contains(g.TeamBId))
+                .ToList();
         }
 
         public async Task<Group> GetGroupForTeam(int teamId)
         {
-            await ValidateTeamAsync(teamId);
+            ValidateWhitelistedTeam(teamId);
             var partialUri = $"teams/{teamId}/group";
             var uri = new Uri(ApiBaseUri, partialUri);
             try
@@ -165,44 +150,17 @@ namespace HandballResults.Services
             throw new ServiceException("failed to get group");
         }
 
-        private static async Task ValidateTeamAsync(int teamId)
+        private static void ValidateWhitelistedTeam(int teamId)
         {
-            var supportedTeams = await EnsureSupportedTeamsAsync();
-            if (!supportedTeams.Any() || !supportedTeams.ContainsKey(teamId))
+            if (!WhitelistedTeamIds.Contains(teamId))
             {
                 throw new ArgumentException($"Team Id {teamId} is not supported");
             }
         }
 
-        public async Task<bool> IsTeamSupportedAsync(int teamId)
+        public bool IsTeamWhitelisted(int teamId)
         {
-            var supportedTeams = await EnsureSupportedTeamsAsync();
-            return supportedTeams.ContainsKey(teamId);
-        }
-
-
-        private static async Task<Dictionary<int, Team>> EnsureSupportedTeamsAsync()
-        {
-            var supportedTeams = await _supportedTeamsFetchTask;
-            if (supportedTeams.Any())
-            {
-                return supportedTeams;
-            }
-            {
-                var attempt = 1;
-                while (attempt++ < 6)
-                {
-                    StartFetchingSupportedTeams();
-                    supportedTeams = await _supportedTeamsFetchTask;
-                    if (supportedTeams.Any())
-                    {
-                        return supportedTeams;
-                    }
-                }
-            }
-
-            System.Diagnostics.Trace.TraceWarning("Giving up fetching supported teams");
-            return new Dictionary<int, Team>();
+            return WhitelistedTeamIds.Contains(teamId);
         }
     }
 }

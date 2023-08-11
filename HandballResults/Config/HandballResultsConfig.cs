@@ -6,16 +6,16 @@ namespace HandballResults.Config
     {
         public static HandballResultsConfigsSection Config =
             ConfigurationManager.GetSection("handballResults") as HandballResultsConfigsSection;
-        public static TeamsCollection GetExcludedTeams()
+        public static TeamsCollection GetTeamWhitelist()
         {
-            return Config.ExcludedTeams;
+            return Config.TeamWhitelist;
         }
     }
 
     public class HandballResultsConfigsSection : ConfigurationSection
     {
-        [ConfigurationProperty("excludedTeams")]
-        public TeamsCollection ExcludedTeams => (TeamsCollection)this["excludedTeams"];
+        [ConfigurationProperty("teamWhitelist")]
+        public TeamsCollection TeamWhitelist => (TeamsCollection)this["teamWhitelist"];
     }
 
     [ConfigurationCollection(typeof(TeamElement), AddItemName = "team")]
@@ -23,7 +23,7 @@ namespace HandballResults.Config
     {
         public TeamElement this[int index]
         {
-            get { return (TeamElement) BaseGet(index); }
+            get => (TeamElement) BaseGet(index);
             set
             {
                 if (BaseGet(index) != null)

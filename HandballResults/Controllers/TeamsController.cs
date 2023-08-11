@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using HandballResults.Models;
 using HandballResults.Services;
@@ -19,9 +18,9 @@ namespace HandballResults.Controllers
         // GET: teams/{teamId}
         [Route("{teamId}")]
         [OutputCache(Duration = 1500, VaryByParam = "*")]
-        public async Task<ActionResult> Index(int teamId)
+        public ActionResult Index(int teamId)
         {
-            if (!await resultService.IsTeamSupportedAsync(teamId))
+            if (!resultService.IsTeamWhitelisted(teamId))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, $"Team Id {teamId} is not supported");
             }

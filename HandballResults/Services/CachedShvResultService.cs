@@ -74,6 +74,6 @@ namespace HandballResults.Services
             }            
         }
 
-        public Task<bool> IsTeamSupportedAsync(int teamId) => resultService.IsTeamSupportedAsync(teamId);
+        public bool IsTeamWhitelisted(int teamId) => resultService.IsTeamWhitelisted(teamId);
     }
 }
