@@ -118,7 +118,8 @@ namespace HandballResults.Services
                 {
                     var games = await response.Content.ReadAsAsync<IEnumerable<Game>>();
 
-                    return await FilterGamesAsync(games);
+                    var filtered = await FilterGamesAsync(games);
+                    return filtered.OrderBy(g => g.GameDateTime);
                 }
 
                 System.Diagnostics.Trace.TraceError("SHV API responded with {0}: {1}", response.StatusCode,
