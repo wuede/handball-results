@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace HandballResults.Controllers
 {
+
     [Route("games")]
     public class GamesController : Controller
     {
         private readonly IResultService resultService;
 
-        public GamesController(IResultService resultService)
+        public GamesController(ResultServiceResolver resultServiceResolver)
         {
-            this.resultService = resultService;
+            this.resultService = resultServiceResolver.Invoke(CachedShvResultService.ServiceResolverKey);
         }
 
         // GET: games/results

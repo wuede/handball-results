@@ -6,6 +6,7 @@ namespace HandballResults.Services
 
     public class CachedShvResultService : IResultService
     {
+        public const string ServiceResolverKey = "cached";
         private const string CacheKeyPrefix = nameof(CachedShvResultService);
 
         private readonly IResultService resultService;

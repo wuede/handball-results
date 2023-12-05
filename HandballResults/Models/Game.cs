@@ -7,24 +7,24 @@ namespace HandballResults.Models
         public int GameId { get; set; }
         public int GameNr { get; set; }
         public DateTime GameDateTime { get; set; }
-        public string GameTypeLong { get; set; }
-        public string GameTypeShort { get; set; }
+        public string GameTypeLong { get; set; } = string.Empty;
+        public string GameTypeShort { get; set; } = string.Empty;
         public int TeamAId { get; set; }
-        public string TeamAName { get; set; }
+        public string TeamAName { get; set; } = string.Empty;
         public int TeamBId { get; set; }
-        public string TeamBName { get; set; }
-        public string LeagueLong { get; set; }
-        public string LeagueShort { get; set; }
-        public string Round { get; set; }
-        public string GameStatus { get; set; }
+        public string TeamBName { get; set; } = string.Empty;
+        public string LeagueLong { get; set; } = string.Empty;
+        public string LeagueShort { get; set; } = string.Empty;
+        public string Round { get; set; } = string.Empty;
+        public string GameStatus { get; set; } = string.Empty;
         public int? TeamAScoreHt { get; set; }
         public int? TeamBScoreHt { get; set; }
         public int? TeamAScoreFt { get; set; }
         public int? TeamBScoreFt { get; set; }
-        public string Venue { get; set; }
-        public string VenueAddress { get; set; }
+        public string Venue { get; set; } = string.Empty;
+        public string VenueAddress { get; set; } = string.Empty;
         public int? VenueZip { get; set; }
-        public string VenueCity { get; set; }
+        public string VenueCity { get; set; } = string.Empty;
         public int? Spectators { get; set; }
         public int? RoundNr { get; set; }
 

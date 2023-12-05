@@ -1,8 +1,22 @@
+using HandballResults.Services;
+using Microsoft.Extensions.Caching.Memory;
+
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
 builder.Services.AddOutputCache();
 builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<IConfigurationService, AppSettingsConfigurationService>();
+builder.Services.AddScoped<ResultServiceResolver>(serviceProvider => key =>
+{
+    if (string.Equals(CachedShvResultService.ServiceResolverKey, key, StringComparison.OrdinalIgnoreCase))
+    {
+        return new CachedShvResultService(serviceProvider.GetRequiredService<ShvResultService>(),
+            serviceProvider.GetRequiredService<IMemoryCache>());
+    }
+
+    return new ShvResultService(serviceProvider.GetRequiredService<IConfigurationService>());
+});
 
 var app = builder.Build();
 
@@ -17,8 +31,10 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseAuthorization();
-app.MapRazorPages();
+
 app.UseOutputCache();
 
+
 app.Run();
+
+public delegate IResultService ResultServiceResolver(string key);
