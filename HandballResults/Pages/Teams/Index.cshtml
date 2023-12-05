@@ -1,0 +1,44 @@
+﻿@model HandballResults.Models.TeamsViewModel
+
+@{
+    ViewBag.Title = "Resultate & Spiele";
+}
+
+<div id="schedule" class="shv-container">
+    <div class="loading-indicator"></div>
+</div>
+
+<div id="standings" class="shv-container">
+    <div class="loading-indicator"></div>
+</div>
+
+<div id="results" class="shv-container">
+    <div class="loading-indicator"></div>
+
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        function contentLoaded(container) {
+            $(container).siblings().show();
+        }
+
+        $(document).ready(function () {
+            $("#schedule").load('@(Url.Action("Schedule", "Games", null, Context.Request.Scheme))', function (response, status, xhr) {
+                if (status !== "error") {
+                    contentLoaded($(this));
+                    initSchedule();
+                }
+            });
+            $("#standings").load('@(Url.Action("Team", "Group", null, Context.Request.Scheme))');
+            $("#results").load('@(Url.Action("Results", "Games", null, Context.Request.Scheme))', function (response, status, xhr) {
+                if (status !== "error") {
+                    contentLoaded($(this));
+                    initResults();
+                }
+            });
+        });
+    </script>
+}
