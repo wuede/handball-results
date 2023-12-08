@@ -17,6 +17,7 @@ namespace HandballResults.Models
         public string LeagueShort { get; set; }
         public string Round { get; set; }
         public string GameStatus { get; set; }
+        public int GameStatusId { get; set; }
         public int? TeamAScoreHt { get; set; }
         public int? TeamBScoreHt { get; set; }
         public int? TeamAScoreFt { get; set; }

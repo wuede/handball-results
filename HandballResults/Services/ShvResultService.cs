@@ -15,6 +15,8 @@ namespace HandballResults.Services
         private static readonly Uri ClubApiBaseUri = new Uri(ApiBaseUri, "clubs/140631/");
         private static readonly HttpClient HttpClient = new HttpClient();
         private static readonly HashSet<int> WhitelistedTeamIds = new HashSet<int>();
+        private static readonly List<int> ScheduledGameStates = new List<int> {1, 6};
+        private static readonly List<int> PlayedGameStates = new List<int> { 2, 3, 4 };
 
         static ShvResultService()
         {
@@ -24,7 +26,7 @@ namespace HandballResults.Services
             var teamWhitelist = HandballResultsConfig.GetTeamWhitelist();
             foreach (TeamElement team in teamWhitelist)
             {
-                System.Diagnostics.Trace.TraceInformation("whitelisting team {0}", team.Id);
+                System.Diagnostics.Trace.TraceInformation("white-listing team {0}", team.Id);
                 WhitelistedTeamIds.Add(team.Id);
             }
         }
@@ -71,14 +73,14 @@ namespace HandballResults.Services
                 uri = new Uri(ClubApiBaseUri, partialUri);
             }
 
-            return await GetGamesAsync(uri);
+            return await GetGamesAsync(uri, PlayedGameStates, SortOrder.Descending);
         }
 
         public async Task<IEnumerable<Game>> GetScheduleAsync() => await GetScheduleAsync(0);
 
         public async Task<IEnumerable<Game>> GetScheduleAsync(int teamId)
         {
-            var partialUri = "games?status=planned&order=asc";
+            var partialUri = "games";
             Uri uri;
             if (teamId > 0)
             {
@@ -91,10 +93,11 @@ namespace HandballResults.Services
                 uri = new Uri(ClubApiBaseUri, partialUri);
             }
 
-            return await GetGamesAsync(uri);
+            return await GetGamesAsync(uri, ScheduledGameStates);
         }
 
-        private static async Task<IEnumerable<Game>> GetGamesAsync(Uri uri)
+        private static async Task<IEnumerable<Game>> GetGamesAsync(Uri uri, ICollection<int> desiredStates,
+            SortOrder sortOrder = SortOrder.Ascending)
         {
             try
             {
@@ -103,9 +106,12 @@ namespace HandballResults.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var games = await response.Content.ReadAsAsync<IEnumerable<Game>>();
+                    var filteredByState = FilterGames(games).Where(g => desiredStates.Contains(g.GameStatusId));
+                    var sorted = sortOrder == SortOrder.Ascending
+                        ? filteredByState.OrderBy(g => g.GameDateTime)
+                        : filteredByState.OrderByDescending(g => g.GameDateTime);
 
-                    var filtered = FilterGames(games);
-                    return filtered.OrderBy(g => g.GameDateTime);
+                    return sorted.ToList();
                 }
 
                 System.Diagnostics.Trace.TraceError("SHV API responded with {0}: {1}", response.StatusCode,
