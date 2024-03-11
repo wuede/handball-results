@@ -54,7 +54,7 @@ app.UseOutputCache();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action}/{id:int?}",
-    defaults: new { controller = "Games", action = "Results" }
+    defaults: new { controller = "Home", action = "Index" }
 );
 
 app.Run();
