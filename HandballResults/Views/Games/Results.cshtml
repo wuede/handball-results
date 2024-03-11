@@ -49,7 +49,6 @@
                 foreach (var game in Model.Games)
                 {
                     <li class="link" data-link-target="https://www.handball.ch/de/matchcenter/spiele/@game.GameId">
-                        <a href="">
                             <div class="col">
                                 <div class="info">@game.GameDateTime.ToString("ddd dd.MMM HH:mm") | @game.Venue</div>
                                 <div>@game.TeamAName : @game.TeamBName</div>
@@ -61,7 +60,6 @@
                             <div class="col">
                                 >
                             </div>
-                        </a>
                     </li>
                 }
             }
