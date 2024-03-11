@@ -7,24 +7,21 @@ namespace HandballResults.Services
     {
         private static readonly Uri ApiBaseUri = new("https://clubapi.handball.ch/rest/v1/");
         private static readonly Uri ClubApiBaseUri = new(ApiBaseUri, "clubs/140631/");
-        private static readonly HttpClient HttpClient = new();
-        private static readonly HashSet<int> WhitelistedTeamIds = new();
         private static readonly List<int> ScheduledGameStates = new() { 1, 6 };
         private static readonly List<int> PlayedGameStates = new() { 2, 3, 4 };
 
-        private readonly ILogger<ShvResultService> logger;
+        private readonly HttpClient httpClient = new();
+        private readonly HashSet<int> whitelistedTeamIds = new();
 
-        public ShvResultService(ILogger<ShvResultService> logger, IConfigurationService configurationService)
+        public ShvResultService(IConfigurationService configurationService)
         {
-            this.logger = logger;
-
-            HttpClient.DefaultRequestHeaders.Authorization =
+            httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", "MTQwNjMxOjJYeEp0ZmRO");
 
             foreach (var teamId in configurationService.Get().TeamIdWhiteList)
             {
-                logger.LogInformation("white listing team {0}", teamId);
-                WhitelistedTeamIds.Add(teamId);
+                System.Diagnostics.Trace.TraceInformation("white listing team {0}", teamId);
+                whitelistedTeamIds.Add(teamId);
             }
         }
 
@@ -35,21 +32,19 @@ namespace HandballResults.Services
 
             try
             {
-                
-                var response = await HttpClient.GetAsync(uri);
+                System.Diagnostics.Trace.TraceInformation("fetching teams from {0}", uri);
+                var response = await httpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
-                    var teams = await response.Content.ReadFromJsonAsync<List<Team>>() ?? new List<Team>();
-                    logger.LogInformation("received {0} teams from {1}", teams.Count, uri);
-                    return teams;
+                    return await response.Content.ReadFromJsonAsync<IEnumerable<Team>>() ?? new List<Team>();
                 }
 
-                logger.LogError("SHV API responded with {0}: {1}", response.StatusCode,
+                System.Diagnostics.Trace.TraceError("SHV API responded with {0}: {1}", response.StatusCode,
                     response.Content.ReadAsStringAsync());
             }
             catch (Exception e)
             {
-                logger.LogError(e, "failed to get teams from {0}",  uri);
+                System.Diagnostics.Trace.TraceError("failed to get teams {0}: {1}", uri, e);
             }
 
             throw new ServiceException("failed to get teams");
@@ -100,41 +95,39 @@ namespace HandballResults.Services
         {
             try
             {
-                var response = await HttpClient.GetAsync(uri);
+                System.Diagnostics.Trace.TraceInformation("fetching games from {0}", uri);
+                var response = await httpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
-                    var games = await response.Content.ReadFromJsonAsync<List<Game>>();
+                    var games = await response.Content.ReadFromJsonAsync<IEnumerable<Game>>();
 
                     if (games == null)
                     {
                         throw new InvalidOperationException($"{nameof(games)} should not be null");
                     }
 
-                    logger.LogInformation("received {0} unfiltered games from {1}", games.Count, uri);
-
                     var filteredByState = FilterGames(games).Where(g => desiredStates.Contains(g.GameStatusId));
-                    var sorted = (sortOrder == SortOrder.Ascending
+                    var sorted = sortOrder == SortOrder.Ascending
                         ? filteredByState.OrderBy(g => g.GameDateTime)
-                        : filteredByState.OrderByDescending(g => g.GameDateTime)).ToList();
+                        : filteredByState.OrderByDescending(g => g.GameDateTime);
 
-                    logger.LogInformation("filtered and sorted {0} games", sorted.Count);
-                    return sorted;
+                    return sorted.ToList();
                 }
 
-                logger.LogError("SHV API responded with {0}: {1}", response.StatusCode,
+                System.Diagnostics.Trace.TraceError("SHV API responded with {0}: {1}", response.StatusCode,
                     response.Content.ReadAsStringAsync());
             }
             catch (Exception e)
             {
-                logger.LogError(e, "failed to get games from {0}", uri);
+                System.Diagnostics.Trace.TraceError("failed to get games {0}: {1}", uri, e);
             }
 
             throw new ServiceException("failed to get games");
         }
 
-        private static IEnumerable<Game> FilterGames(IEnumerable<Game> games)
+        private IEnumerable<Game> FilterGames(IEnumerable<Game> games)
         {
-            return games.Where(g => WhitelistedTeamIds.Contains(g.TeamAId) || WhitelistedTeamIds.Contains(g.TeamBId))
+            return games.Where(g => whitelistedTeamIds.Contains(g.TeamAId) || whitelistedTeamIds.Contains(g.TeamBId))
                 .ToList();
         }
 
@@ -145,28 +138,27 @@ namespace HandballResults.Services
             var uri = new Uri(ApiBaseUri, partialUri);
             try
             {
-                var response = await HttpClient.GetAsync(uri);
+                System.Diagnostics.Trace.TraceInformation("fetching group from {0}", uri);
+                var response = await httpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
-                    var group = await response.Content.ReadFromJsonAsync<Group>() ?? new Group();
-                    logger.LogInformation("successfully received group {0} from {1}", group.GroupId, uri);
-                    return group;
+                    return await response.Content.ReadFromJsonAsync<Group>() ?? new Group();
                 }
 
                 var content = response.Content.ReadAsStringAsync();
-                logger.LogError("SHV API responded with {0}: {1}", response.StatusCode, content);
+                System.Diagnostics.Trace.TraceError("SHV API responded with {0}: {1}", response.StatusCode, content);
             }
             catch (Exception e)
             {
-                logger.LogError(e, "failed to get group from {0}", uri);
+                System.Diagnostics.Trace.TraceError("failed to get group {0}: {1}", uri, e);
             }
 
             throw new ServiceException("failed to get group");
         }
 
-        private static void ValidateWhitelistedTeam(int teamId)
+        private void ValidateWhitelistedTeam(int teamId)
         {
-            if (!WhitelistedTeamIds.Contains(teamId))
+            if (!whitelistedTeamIds.Contains(teamId))
             {
                 throw new ArgumentException($"Team Id {teamId} is not supported");
             }
@@ -174,7 +166,7 @@ namespace HandballResults.Services
 
         public bool IsTeamWhitelisted(int teamId)
         {
-            return WhitelistedTeamIds.Contains(teamId);
+            return whitelistedTeamIds.Contains(teamId);
         }
     }
 }
