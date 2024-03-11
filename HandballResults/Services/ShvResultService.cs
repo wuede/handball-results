@@ -5,20 +5,23 @@ namespace HandballResults.Services
 {
     public class ShvResultService : IResultService
     {
+        public const string HttpClientName = "ShvApiClient";
+
         private static readonly Uri ApiBaseUri = new("https://clubapi.handball.ch/rest/v1/");
         private static readonly Uri ClubApiBaseUri = new(ApiBaseUri, "clubs/140631/");
         private static readonly List<int> ScheduledGameStates = new() { 1, 6 };
         private static readonly List<int> PlayedGameStates = new() { 2, 3, 4 };
 
         private readonly ILogger<ShvResultService> logger;
-        private readonly HttpClient httpClient = new();
+        private readonly HttpClient httpClient;
         private readonly HashSet<int> whitelistedTeamIds = new();
 
-        public ShvResultService(ILogger<ShvResultService> logger, IConfigurationService configurationService)
+        public ShvResultService(ILogger<ShvResultService> logger, IConfigurationService configurationService, IHttpClientFactory httpClientFactory)
         {
             this.logger = logger;
 
             var configuration = configurationService.Get();
+            httpClient = httpClientFactory.CreateClient(HttpClientName);
             httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", configuration.ShvApiKey);
 

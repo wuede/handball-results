@@ -22,6 +22,12 @@ builder.Services.AddRazorPages();
 builder.Services.AddOutputCache();
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IConfigurationService, AppSettingsConfigurationService>();
+
+// register HttpClient which ignores SSL certs
+builder.Services.AddHttpClient(ShvResultService.HttpClientName, c => { }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
+});
 builder.Services.AddSingleton<ShvResultService>();
 builder.Services.AddScoped<ResultServiceResolver>(serviceProvider => key =>
 {
