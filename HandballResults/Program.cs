@@ -33,6 +33,7 @@ builder.Services.AddLogging(logging =>
     logging.ClearProviders();
     logging.AddConfiguration(config);
     logging.AddConsole();
+    logging.AddDebug();
 });
 
 var app = builder.Build();
