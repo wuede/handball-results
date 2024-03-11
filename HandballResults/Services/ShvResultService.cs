@@ -12,38 +12,44 @@ namespace HandballResults.Services
         private static readonly List<int> ScheduledGameStates = new() { 1, 6 };
         private static readonly List<int> PlayedGameStates = new() { 2, 3, 4 };
 
-        public ShvResultService(IConfigurationService configurationService)
+        private readonly ILogger<ShvResultService> logger;
+
+        public ShvResultService(ILogger<ShvResultService> logger, IConfigurationService configurationService)
         {
+            this.logger = logger;
+
             HttpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", "MTQwNjMxOjJYeEp0ZmRO");
 
             foreach (var teamId in configurationService.Get().TeamIdWhiteList)
             {
-                System.Diagnostics.Trace.TraceInformation("white listing team {0}", teamId);
+                logger.LogInformation("white listing team {0}", teamId);
                 WhitelistedTeamIds.Add(teamId);
             }
         }
 
-        public static async Task<IEnumerable<Team>> GetTeamsAsync()
+        public async Task<IEnumerable<Team>> GetTeamsAsync()
         {
             const string partialUri = "teams";
             var uri = new Uri(ClubApiBaseUri, partialUri);
 
             try
             {
-                System.Diagnostics.Trace.TraceInformation("fetching teams from {0}", uri);
+                
                 var response = await HttpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadFromJsonAsync<IEnumerable<Team>>() ?? new List<Team>();
+                    var teams = await response.Content.ReadFromJsonAsync<List<Team>>() ?? new List<Team>();
+                    logger.LogInformation("received {0} teams from {1}", teams.Count, uri);
+                    return teams;
                 }
 
-                System.Diagnostics.Trace.TraceError("SHV API responded with {0}: {1}", response.StatusCode,
+                logger.LogError("SHV API responded with {0}: {1}", response.StatusCode,
                     response.Content.ReadAsStringAsync());
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError("failed to get teams {0}: {1}", uri, e);
+                logger.LogError(e, "failed to get teams from {0}",  uri);
             }
 
             throw new ServiceException("failed to get teams");
@@ -89,36 +95,38 @@ namespace HandballResults.Services
             return await GetGamesAsync(uri, ScheduledGameStates);
         }
 
-        private static async Task<IEnumerable<Game>> GetGamesAsync(Uri uri, ICollection<int> desiredStates,
+        private async Task<IEnumerable<Game>> GetGamesAsync(Uri uri, ICollection<int> desiredStates,
             SortOrder sortOrder = SortOrder.Ascending)
         {
             try
             {
-                System.Diagnostics.Trace.TraceInformation("fetching games from {0}", uri);
                 var response = await HttpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
-                    var games = await response.Content.ReadFromJsonAsync<IEnumerable<Game>>();
+                    var games = await response.Content.ReadFromJsonAsync<List<Game>>();
 
                     if (games == null)
                     {
                         throw new InvalidOperationException($"{nameof(games)} should not be null");
                     }
 
-                    var filteredByState = FilterGames(games).Where(g => desiredStates.Contains(g.GameStatusId));
-                    var sorted = sortOrder == SortOrder.Ascending
-                        ? filteredByState.OrderBy(g => g.GameDateTime)
-                        : filteredByState.OrderByDescending(g => g.GameDateTime);
+                    logger.LogInformation("received {0} unfiltered games from {1}", games.Count, uri);
 
-                    return sorted.ToList();
+                    var filteredByState = FilterGames(games).Where(g => desiredStates.Contains(g.GameStatusId));
+                    var sorted = (sortOrder == SortOrder.Ascending
+                        ? filteredByState.OrderBy(g => g.GameDateTime)
+                        : filteredByState.OrderByDescending(g => g.GameDateTime)).ToList();
+
+                    logger.LogInformation("filtered and sorted {0} games", sorted.Count);
+                    return sorted;
                 }
 
-                System.Diagnostics.Trace.TraceError("SHV API responded with {0}: {1}", response.StatusCode,
+                logger.LogError("SHV API responded with {0}: {1}", response.StatusCode,
                     response.Content.ReadAsStringAsync());
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError("failed to get games {0}: {1}", uri, e);
+                logger.LogError(e, "failed to get games from {0}", uri);
             }
 
             throw new ServiceException("failed to get games");
@@ -137,19 +145,20 @@ namespace HandballResults.Services
             var uri = new Uri(ApiBaseUri, partialUri);
             try
             {
-                System.Diagnostics.Trace.TraceInformation("fetching group from {0}", uri);
                 var response = await HttpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadFromJsonAsync<Group>() ?? new Group();
+                    var group = await response.Content.ReadFromJsonAsync<Group>() ?? new Group();
+                    logger.LogInformation("successfully received group {0} from {1}", group.GroupId, uri);
+                    return group;
                 }
 
                 var content = response.Content.ReadAsStringAsync();
-                System.Diagnostics.Trace.TraceError("SHV API responded with {0}: {1}", response.StatusCode, content);
+                logger.LogError("SHV API responded with {0}: {1}", response.StatusCode, content);
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError("failed to get group {0}: {1}", uri, e);
+                logger.LogError(e, "failed to get group from {0}", uri);
             }
 
             throw new ServiceException("failed to get group");
