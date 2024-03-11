@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace HandballResults.Controllers
 {
-
     [Route("games")]
     public class GamesController : Controller
     {

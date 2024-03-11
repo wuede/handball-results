@@ -5,7 +5,8 @@ module.exports = {
     entry: {
         site: './src/js/site.js',
         schedule: './src/js/schedule.js',
-        results: './src/js/results.js'
+        results: './src/js/results.js',
+        team: './src/js/team.js'
     },
     output: {
         filename: '[name].entry.js',

@@ -10,12 +10,13 @@ namespace HandballResults.Controllers
     {
         private readonly IResultService resultService;
 
-        public TeamsController(IResultService resultService)
+        public TeamsController(ResultServiceResolver resultServiceResolver)
         {
-            this.resultService = resultService;
+            this.resultService = resultServiceResolver.Invoke(CachedShvResultService.ServiceResolverKey);
         }
 
         // GET: teams/{teamId}
+        [HttpGet]
         [Route("{teamId}")]
         [OutputCache(Duration = 1500, VaryByQueryKeys = new[] { "*" })]
         public ActionResult Index(int teamId)

@@ -11,9 +11,9 @@ namespace HandballResults.Controllers
     {
         private readonly IResultService resultService;
 
-        public GroupController(IResultService resultService)
+        public GroupController(ResultServiceResolver resultServiceResolver)
         {
-            this.resultService = resultService;
+            this.resultService = resultServiceResolver.Invoke(CachedShvResultService.ServiceResolverKey);
         }
 
         [HttpGet]
