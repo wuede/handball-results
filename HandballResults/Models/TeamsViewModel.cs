@@ -13,7 +13,7 @@ namespace HandballResults.Models
 
         public Group Group { get; }
 
-        public ServiceException Error { get; set; }
+        public ServiceException? Error { get; set; }
 
        
         public TeamsViewModel(IEnumerable<Game> schedule, IEnumerable<Game> results, Group group, ServiceException error)
@@ -27,6 +27,9 @@ namespace HandballResults.Models
         public TeamsViewModel(int teamId)
         {
             TeamId = teamId;
+            Schedule = new List<Game>();
+            Results = new List<Game>();
+            Group = new Group();
         }
     }
 }
