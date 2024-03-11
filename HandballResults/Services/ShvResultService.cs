@@ -18,10 +18,11 @@ namespace HandballResults.Services
         {
             this.logger = logger;
 
+            var configuration = configurationService.Get();
             httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Basic", "MTQwNjMxOjJYeEp0ZmRO");
+                new AuthenticationHeaderValue("Basic", configuration.ShvApiKey);
 
-            foreach (var teamId in configurationService.Get().TeamIdWhiteList)
+            foreach (var teamId in configuration.TeamIdWhiteList)
             {
                 logger.LogInformation("white listing team {0}", teamId);
                 whitelistedTeamIds.Add(teamId);
