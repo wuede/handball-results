@@ -73,7 +73,7 @@ namespace HandballResults.Services
 
         public async Task<IEnumerable<Game>> GetScheduleAsync(int teamId)
         {
-            var partialUri = "games?status=planned&order=asc";
+            var partialUri = "games";
             Uri uri;
             if (teamId > 0)
             {

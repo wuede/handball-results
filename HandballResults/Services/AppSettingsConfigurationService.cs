@@ -5,7 +5,7 @@ namespace HandballResults.Services
 {
     public class AppSettingsConfigurationService : IConfigurationService
     {
-        public const string AppSettingsKeyName = "HandballResultsConfig";
+        public const string AppSettingsKeyName = "HandballResults";
 
         private readonly IConfiguration configuration;
 

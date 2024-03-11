@@ -1,0 +1,166 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+body {
+    font-family: 'Roboto Condensed';
+    font-weight: 300;
+    font-style: normal;
+    text-transform: none;
+    font-size: 16px;
+    line-height: 1.1em;
+}
+
+table {
+    border-spacing: 0;
+    width: 100%;
+    min-width: 800px;
+}
+
+    table td {
+        padding: 5px;
+    }
+
+    table thead {
+        background-color: #245fa3;
+        color: white;
+    }
+
+    table tbody tr:hover {
+        background-color: lightgrey;
+        background-color: rgba(63, 68, 74, 0.1);
+    }
+
+    table.standings {
+        min-width: initial;
+    }
+
+a {
+    text-decoration: none;
+    color: #245fa3;
+}
+
+    a:visited {
+        color: #245fa3;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+.hidden {
+    display: none;
+}
+
+.loading-indicator {
+    background-image: url(../images/ajax-loader.gif);
+    width: 30px;
+    height: 30px;
+}
+
+.shv-container {
+    margin-bottom: 5px;
+}
+
+.link {
+    cursor: pointer;
+}
+
+.col {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+ul.games {
+    list-style-type: none;
+    padding: 0;
+}
+
+    ul.games li {
+        padding: 0 10px;
+        border-bottom: 1px solid lightgrey;
+    }
+
+        ul.games li a {
+            text-decoration: none;
+            color: black;
+            display: block;
+            padding: 20px 0;
+        }
+
+        ul.games li .col:first-child {
+            width: 95%;
+        }
+
+        ul.games li .info {
+            margin-bottom: 10px;
+            color: grey;
+        }
+
+        ul.games li .scoreFt {
+            display: inline-block;
+            background-color: black;
+            color: white;
+            width: 50px;
+            text-align: center;
+        }
+
+        ul.games li .scoreHt {
+            display: inline-block;
+            background-color: grey;
+            color: white;
+            width: 50px;
+            text-align: center;
+        }
+
+        ul.games li:hover {
+            background-color: lightgrey;
+        }
+
+.score span {
+    padding: 0 5px;
+}
+
+.score .ft {
+    font-weight: bold;
+    background-color: black;
+    color: white;
+}
+
+.score .ht {
+    background-color: lightgrey;
+}
+
+/* responsiveness */
+.narrow {
+    display: none;
+}
+
+.wide {
+    display: initial;
+}
+
+@media only screen and (max-width: 830px) {
+    .narrow {
+        display: initial;
+    }
+
+    .wide {
+        display: none;
+    }
+}

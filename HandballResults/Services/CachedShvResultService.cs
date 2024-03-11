@@ -22,7 +22,7 @@ namespace HandballResults.Services
 
         public Task<IEnumerable<Game>> GetResultsAsync(int teamId)
         {
-            var cacheKey = $"{CacheKeyPrefix}-results-${teamId}";
+            var cacheKey = $"{CacheKeyPrefix}-results-{teamId}";
             var valueFactory = new Func<ICacheEntry, Task<IEnumerable<Game>>>(async (entry) =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
@@ -36,11 +36,12 @@ namespace HandballResults.Services
 
         public Task<IEnumerable<Game>> GetScheduleAsync(int teamId)
         {
-            var cacheKey = $"{CacheKeyPrefix}-schedule-${teamId}";
+            var cacheKey = $"{CacheKeyPrefix}-schedule-{teamId}";
             var valueFactory = new Func<ICacheEntry, Task<IEnumerable<Game>>>(async (entry) =>
             {
+                var games = await resultService.GetScheduleAsync(teamId);
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-                return await resultService.GetScheduleAsync(teamId);
+                return games;
             });
 
             return AddOrGetFromCacheAsync(cacheKey, valueFactory);

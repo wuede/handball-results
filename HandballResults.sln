@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandballResultsOld", "HandballResultsOld\HandballResultsOld.csproj", "{43887EEE-4776-4FAC-9736-C33D6FAABB16}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HandballResults", "HandballResults\HandballResults.csproj", "{5E8F9477-DF60-4E37-A1B3-3CE195AFEA35}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebTemplate", "WebTemplate\WebTemplate.csproj", "{F9AEB3B6-E07B-4754-8168-1DDA810E1DBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{43887EEE-4776-4FAC-9736-C33D6FAABB16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{43887EEE-4776-4FAC-9736-C33D6FAABB16}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{43887EEE-4776-4FAC-9736-C33D6FAABB16}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{43887EEE-4776-4FAC-9736-C33D6FAABB16}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5E8F9477-DF60-4E37-A1B3-3CE195AFEA35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5E8F9477-DF60-4E37-A1B3-3CE195AFEA35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E8F9477-DF60-4E37-A1B3-3CE195AFEA35}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E8F9477-DF60-4E37-A1B3-3CE195AFEA35}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9AEB3B6-E07B-4754-8168-1DDA810E1DBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9AEB3B6-E07B-4754-8168-1DDA810E1DBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9AEB3B6-E07B-4754-8168-1DDA810E1DBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9AEB3B6-E07B-4754-8168-1DDA810E1DBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
