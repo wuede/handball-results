@@ -3,6 +3,20 @@ using Microsoft.Extensions.Caching.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 
+IConfiguration config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables()
+    .Build();
+
+builder.Services.AddSingleton(config);
+builder.Services.AddLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddConfiguration(config);
+    logging.AddConsole();
+});
+
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddOutputCache();
